@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap');
+:root{
+     /* Colors */
+     --light-blue: #31c3bd;
+     --light-blue-hover: #65e9e4;
+     --light-yellow: #f2b137;
+     --light-yellow-hover: #ffc860;
+     --dark-navy: #1a2a33;
+     --semi-dark-navy: #1f3641;
+     --silver: #a8bfc9;
+     --silver-hover: #dbe8ed;
+     --button-1-shadow: #CC8B13;
+     --button-2-shadow: #118C87;
+     --player-selector: #d9d9d9;
+
+
+     --default-font: font-family: 'Outfit', sans-serif;
+
+}
+
+*{
+    /* CSS Reset */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    height: 100vh;
+    width: 100vw;
+    
+}
+body{
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    background-color: var(--dark-navy);
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+#new-game-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 327px;
+    height: 429px;
+    background-color: var(--dark-navy);
+    overflow: hidden;
+    text-transform: uppercase;
+
+}
+
+#mark-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 327px;
+    height: 205px;
+    background-color: var(--semi-dark-navy);
+    box-shadow: inset 0 -8px 0 0 #10212A;
+    border-radius: 15px;
+    margin-top: 2em;
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    
+
+}
+
+
+#select-container{
+    margin-top: 24px;
+    margin-bottom: 17px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 279px;
+    height: 72px;
+    background-color: var(--dark-navy);
+    border-radius: 10px;
+}
+#group{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 262.99px;
+    height: 54px;
+}
+
+#x-selector{
+    background-color: var(--player-selector);
+    width: 139.99px;
+    height: 54px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#o-selector{
+    width: 139.99px;
+    height: 54px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo{
+    width: 71.97px;
+    height: 32px;
+}
+
+.svg-selectors{
+    width: 32px;
+    height: 32px;
+
+}
+
+.svg-selectors.one {
+    /* https://cssfilterconverter.com/ */
+    filter: brightness(0) saturate(100%) invert(13%) sepia(7%) saturate(2745%) hue-rotate(159deg) brightness(100%) contrast(94%);
+}
+.svg-selectors.two{
+    filter: brightness(0) saturate(100%) invert(70%) sepia(1%) saturate(3221%) hue-rotate(172deg) brightness(99%) contrast(121%);
+}
+
+
+
+
+
+
+
+
+
+
+/* Typography */
+
+.heading-lg{
+    font-family: var(--default-font);
+    font-size: 2.5rem;
+    letter-spacing: 0.1563rem;
+    color: var(--silver);
+    font-weight: 700;
+}
+.heading-m{
+    font-family: var(--default-font);
+    font-size: 1.5rem;
+    letter-spacing: 0.0938rem;
+    color: var(--silver);
+    font-weight: 700;
+}
+.heading-s{
+    font-family: var(--default-font);
+    font-size: 1.25rem;
+    letter-spacing: 0.0781rem;
+    color: var(--silver);
+    font-weight: 700;
+}
+.heading-xs{
+    font-family: var(--default-font);
+    font-size: 1rem;
+    letter-spacing: 0.0625rem;
+    color: var(--silver);
+    font-weight: 700;
+}
+
+.body-paragraph{
+    font-family: var(--default-font);
+    font-size: 0.875rem;
+    letter-spacing: 0.05rem;
+    color: var(--silver);
+    font-weight: 500;
+}
+
+/* Buttons */
+
+.button-1{
+    letter-spacing: 0.0781rem;
+    font-size: 1rem;
+    text-align: center;
+    font-family: var(--default-font);
+    font-weight: 700;
+    color: var(--dark-navy);
+    width: 327px;
+    height: 56px;
+    background-color: var(--light-yellow);
+    box-shadow: inset 0 -0.5rem 0 0 var(--button-1-shadow);
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 16px;
+}
+.button-2{
+    letter-spacing: 0.0781rem;
+    font-size: 1rem;
+    text-align: center;
+    font-family: var(--default-font);
+    color: var(--dark-navy);
+    font-weight: 700;
+    width: 327px;
+    height: 56px;
+    background-color: var(--light-blue);
+    box-shadow: inset 0 -0.5rem 0 0 var(--button-2-shadow);
+    border-radius: 15px;
+    border: none;
+}
+/* .button-1:hover{
+    
+    background-color: var(--light-yellow-hover);
+} */
+

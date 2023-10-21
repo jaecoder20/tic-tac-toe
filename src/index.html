@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
 
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
   
@@ -11,13 +12,23 @@
 <body>
 
   <!-- New game menu start -->
-
-  Pick player 1's mark
-  Remember: X goes first
-
-  New Game (vs CPU)
-  New Game (vs player)
-
+<div id="new-game-container">
+  <img id="logo" src="assets/logo.svg" alt="">
+  <div id="mark-container">
+    <h1 id ="h1-player" class="heading-xs">Pick player 1's mark</h1>
+    <div id="select-container">
+      <div id="group">
+        <div  id="x-selector"><img class="svg-selectors one" src="assets/icon-x.svg" alt=""></div>
+        <div  id="o-selector"><img class="svg-selectors two" src="assets/icon-o.svg" alt=""></div>
+      </div>
+    </div>
+  <p class="body-paragraph">Remember: X goes first</p>
+  </div>
+  <button class="button-1">NEW GAME (VS CPU)</button>
+  <button class="button-2">NEW GAME (VS PLAYER)</button>
+  
+  
+</div>
   <!-- New game menu end -->
 
   <!-- Game board start -->
@@ -42,6 +53,5 @@
   Yes, restart
 
   <!-- Game board end -->
-
 </body>
 </html>
