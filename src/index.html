@@ -12,21 +12,21 @@
 <body>
 
   <!-- New game menu start -->
-  <!-- <div id="new-game-container">
+  <div id="new-game-container">
     <img id="logo" src="assets/logo.svg" alt="">
     <div id="mark-container">
       <h1 id ="h1-player" class="heading-xs">Pick player 1's mark</h1>
       <div id="select-container">
         <div id="group">
-          <div  id="x-selector"><img class="svg-selectors one" src="assets/icon-x.svg" alt=""></div>
-          <div  id="o-selector"><img class="svg-selectors two" src="assets/icon-o.svg" alt=""></div>
+          <div  id="x-selector"><img class="svg-selectors one" src="assets/icon-x-dark.svg" alt=""></div>
+          <div  id="o-selector"><img class="svg-selectors two" src="assets/icon-o-silver.svg" alt=""></div>
         </div>
       </div>
       <p class="body-paragraph">Remember: X goes first</p>
     </div>
     <button class="button-1">NEW GAME (VS CPU)</button>
     <button class="button-2">NEW GAME (VS PLAYER)</button>
-  </div> -->
+  </div>
   <!-- New game menu end -->
 
   <!-- Game board start -->
@@ -57,33 +57,33 @@
 
   
 
-  <div id="scores-portion">
-    <div id="player-wins">
-      <h2 class="score-heading">X (YOU)</h2>
-      <h2 class="score">0</h2>
+    <div id="scores-portion">
+      <div id="player-wins">
+        <h2 class="score-heading">X (YOU)</h2>
+        <h2 class="score">0</h2>
+      </div>
+      <div id="player-ties">
+        <h2 class="score-heading">TIES</h2>
+        <h2 class="score">0</h2>
+      </div>
+      <div id="cpu-wins">
+        <h2 class="score-heading">O (CPU)</h2>
+        <h2 class="score">0</h2>
+      </div>
     </div>
-    <div id="player-ties">
-      <h2 class="score-heading">TIES</h2>
-      <h2 class="score">0</h2>
-    </div>
-    <div id="cpu-wins">
-      <h2 class="score-heading">O (CPU)</h2>
-      <h2 class="score">0</h2>
-    </div>
+  </div> 
+
+  <div id="difficulty-screen">
+    <div id="diffuly-container">
+        <h2 class="heading-s">SELECT YOUR DIFFICULTY</h2>
+        <button id="easy-button">EASY</button>
+        <button id="medium-button">MEDIUM</button>
+        <button id="impossible-button">IMPOSSIBLE</button>
+      </div>
+
   </div>
-</div> 
 
-<!-- <div id="difficulty-screen">
-  <div id="diffuly-container">
-      <h2 class="heading-s">SELECT YOUR DIFFICULTY</h2>
-      <button id="easy-button">EASY</button>
-      <button id="medium-button">MEDIUM</button>
-      <button id="impossible-button">IMPOSSIBLE</button>
-    </div>
-
-</div> -->
-
-  <!-- <div id="pop-screen">
+  <div id="pop-screen">
     <div id="pop-screen-container">
       <h2 id="win-or-lose-msg" >OH NO, YOU LOST</h2>
       <div class="heading-m" id="result-msg">
@@ -95,9 +95,9 @@
         <button id="next-button" >NEXT ROUND</button>
       </div>
     </div>
-  </div> -->
+  </div> 
 
-  <!-- <div id="pop-screen-r">
+  <div id="pop-screen-r">
     <div id="pop-screen-container-r">
 
         <div id="restart-text">RESTART GAME?</div>
@@ -106,8 +106,10 @@
         <button id="cancel-button" >NO, CANCEL</button>
         <button id="restart-button" >YES, RESTART</button>
       </div>
-  </div> -->
+  </div>
  
   <!-- Game board end -->
+
+  <script src="logic.js"></script>
 </body>
 </html>
