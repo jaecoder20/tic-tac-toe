@@ -188,6 +188,82 @@ body{
     align-items: center;
 }
 
+#difficulty-screen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 328px;
+    height: 516px;
+    background-color: var(--semi-dark-navy);
+    border-radius: 10px;
+    
+}
+
+#diffuly-container{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+#easy-button{
+    letter-spacing: 0.0781rem;
+    font-size: 1rem;
+    text-align: center;
+    font-family: var(--default-font);
+    font-weight: 700;
+    color: var(--dark-navy);
+    width: 226px;
+    height: 52px;
+    background-color: var(--light-yellow);
+    box-shadow: inset 0 -0.5rem 0 0 var(--button-1-shadow);
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 16px;
+}
+#medium-button{
+    letter-spacing: 0.0781rem;
+    font-size: 1rem;
+    text-align: center;
+    font-family: var(--default-font);
+    font-weight: 700;
+    color: var(--dark-navy);
+    width: 226px;
+    height: 52px;
+    background-color: var(--light-blue);
+    box-shadow: inset 0 -0.5rem 0 0 var(--button-2-shadow);
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 16px;
+}
+#impossible-button{
+    letter-spacing: 0.0781rem;
+    font-size: 1rem;
+    text-align: center;
+    font-family: var(--default-font);
+    font-weight: 700;
+    color: var(--dark-navy);
+    width: 226px;
+    height: 52px;
+    background-color: var(--silver);
+    box-shadow: inset 0 -0.5rem 0 0 var(--grey-shadow);
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 16px;
+}
+#easy-button:hover{
+    background-color: var(--light-yellow-hover);
+    cursor: pointer;
+}
+#medium-button:hover{
+    background-color: var(--light-blue-hover);
+    cursor: pointer;
+}
+#impossible-button:hover{
+    background-color: var(--silver-hover);
+    cursor: pointer;
+}
+
 #player-wins{
     background-color: var(--light-blue);
 }
