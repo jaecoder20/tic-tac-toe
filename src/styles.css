@@ -140,7 +140,7 @@ body{
     height: 516px;
     margin-bottom: 127px ;
     display: none;
-    z-index: -1;
+    z-index: 0;
 }
 
 
@@ -288,9 +288,9 @@ body{
     border-radius: 5px ;
     box-shadow: inset 0 -4px 0 0 var(--playbox-shadow) ;
 }
-#turn-svg{
+/* #turn-svg{
     filter: brightness(0) saturate(100%) invert(70%) sepia(1%) saturate(3221%) hue-rotate(172deg) brightness(99%) contrast(121%);
-}
+} */
 
 #reset-container{
     background-color: var(--silver);
@@ -517,6 +517,10 @@ span{
     border: none;
     margin-bottom: 16px;
 }
+.button-1:hover{
+    background-color: var(--light-yellow-hover);
+    cursor: pointer;
+}
 .button-2{
     letter-spacing: 0.0781rem;
     font-size: 1rem;
@@ -530,6 +534,11 @@ span{
     box-shadow: inset 0 -0.5rem 0 0 var(--button-2-shadow);
     border-radius: 15px;
     border: none;
+}
+.button-2:hover{
+    background-color: var(--light-blue-hover);
+    cursor: pointer;
+
 }
 /* .button-1:hover{
     
