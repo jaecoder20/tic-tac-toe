@@ -29,6 +29,9 @@ let currentPlayer;
 let playArea;
 let vs_cpu;
 let gameEnded;
+let vsCPU_scores;
+let PVP_scores;
+
 
 let player_1,player_2,player_cpu;
 window.addEventListener('DOMContentLoaded', () => {
@@ -51,6 +54,8 @@ window.addEventListener('DOMContentLoaded', () => {
         "isFull": 0,
     };
 
+    vsCPU_scores = [0,0,0]
+    PVP_scores = [0,0,0]
 
     // hideGameBoard();
     // hidePopUpScreen();
@@ -112,24 +117,24 @@ function hidePopUpScreenRestart(){
 
 function hoverPlayerEvent(){
     playerSelector_O.addEventListener("mouseenter",function(){
-        if (currentPlayer.value === "X"){
+        if (player_1 === "X"){
             playerSelector_O.style.backgroundColor = semiDarkNavy;
             playerSelector_O.style.cursor = "pointer";
         }
     });
     playerSelector_O.addEventListener("mouseleave",function(){
-        if (currentPlayer.value === "X"){
+        if (player_1 === "X"){
             playerSelector_O.style.backgroundColor = darkNavy;
         }
     });
     playerSelector_X.addEventListener("mouseenter",function(){
-        if (currentPlayer.value === "O"){
+        if (player_1 === "O"){
             playerSelector_X.style.backgroundColor = semiDarkNavy;
             playerSelector_X.style.cursor = "pointer";
         }
     });
     playerSelector_X.addEventListener("mouseleave",function(){
-        if (currentPlayer.value === "O"){
+        if (player_1 === "O"){
             playerSelector_X.style.backgroundColor = darkNavy;
         }
     });
@@ -146,10 +151,10 @@ function switchFirstPlayerEvent(){
         svgs[0].src = "assets/icon-x-silver.svg";
         svgs[1].src = "assets/icon-o-dark.svg";
 
-        // console.log(currentPlayer)
-        // console.log(player_1)
-        // console.log(player_2)
-        // console.log(player_cpu)
+        console.log(currentPlayer)
+        console.log(player_1)
+        console.log(player_2)
+        console.log(player_cpu)
 
         
     })
@@ -163,10 +168,10 @@ function switchFirstPlayerEvent(){
         svgs[0].src = "assets/icon-x-dark.svg";
         svgs[1].src = "assets/icon-o-silver.svg";
 
-        // console.log(currentPlayer)
-        // console.log(player_1)
-        // console.log(player_2)
-        // console.log(player_cpu)
+        console.log(currentPlayer)
+        console.log(player_1)
+        console.log(player_2)
+        console.log(player_cpu)
 
         
     })
@@ -198,7 +203,7 @@ function modifyScoreBoard_CPU(){
     let board = gameBoard;
     let blueScoreBoard = board.querySelector("#player-wins").querySelector(".score-heading");
     let yellowScoreBoard = board.querySelector("#cpu-wins").querySelector(".score-heading");
-    if (currentPlayer.value==="X"){
+    if (player_1==="X"){
         blueScoreBoard.textContent = "X (YOU)";
         yellowScoreBoard.textContent = "O (CPU)"
     }else{
@@ -226,10 +231,15 @@ function modifyPopScreen(winner){
     if(vs_cpu){
         if (winner === player_1){
             if(player_1==='O'){
+                popUpScreen.querySelector("img").style.display = "block";
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "YOU WON!"
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
+                
             }else{
+                popUpScreen.querySelector("img").style.display = "block";
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "YOU WON!"
                 popUpScreen.querySelector("#result-msg").style.color = lightBlue;
                 popUpScreen.querySelector("img").src = "assets/icon-x.svg";
@@ -237,9 +247,14 @@ function modifyPopScreen(winner){
             
         }else if(winner===player_cpu){
             if(player_cpu==='O'){
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
+                popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
+                console.log(winner)
             }else{
+                popUpScreen.querySelector("img").style.display = "block";
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
                 popUpScreen.querySelector("#result-msg").style.color = lightBlue;
                 popUpScreen.querySelector("img").src = "assets/icon-x.svg";
             }
@@ -252,10 +267,14 @@ function modifyPopScreen(winner){
     }else{
         if (winner === player_1){
             if(player_1==='O'){
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
+                popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "PLAYER 1 WINS"
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
             }else{
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
+                popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "PLAYER 1 WINS!"
                 popUpScreen.querySelector("#result-msg").style.color = lightBlue;
                 popUpScreen.querySelector("img").src = "assets/icon-x.svg";
@@ -263,10 +282,14 @@ function modifyPopScreen(winner){
             
         }else if(winner===player_2){
             if(player_2==='O'){
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
+                popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "PLAYER 2 WINS"
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
             }else{
+                popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
+                popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#win-or-lose-msg").textContent = "PLAYER 2 WINS"
                 popUpScreen.querySelector("#result-msg").style.color = lightBlue;
                 popUpScreen.querySelector("img").src = "assets/icon-x.svg";
@@ -296,6 +319,10 @@ function hitBoxHandler(event){
     place_X_or_O(event, playCells, currentPlayer, gameState); 
 }
 
+function toggleTurnIndicator(P){
+    gameBoard.querySelector("#turn-indicator").querySelector("#turn-svg").src = `assets/icon-${P}-silver.svg`;
+}
+
 let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     let clickedCell = event.target;
     let index = clickedCell.id; 
@@ -308,7 +335,8 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
         clickedCellImg.src = imgSrc; // Update the src attribute of the img element
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
         // console.log(clickedCell.classList);
-        checkOutcome(gameState, playCells);
+        (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
+        
     }
 }
 let updateaGameState = function(index,currentPlayer){
@@ -376,18 +404,23 @@ let checkOutcome = function(gameState,divs){
         if (value[0] === "O" && value[1] === "O" && value[2] === "O") {
             // console.log("here")
             showPopUpScreen('O');
+            updateScoreBoard_CPU("O")
             gameEnded = true;
             // disablePlaying(divs);
             
         } else if (value[0] === "X" && value[1] === "X" && value[2] === "X") {
             showPopUpScreen('X');
+            updateScoreBoard_CPU("X")
             gameEnded = true;
             
         }
         else if ((gameState.isFull==9)&&(gameEnded==false)){
             showPopUpScreen('T');
+            updateScoreBoard_CPU("T")
+            gameEnded = true;
         }
     }
+    return gameEnded;
 }
 
 function newRound(){
@@ -435,6 +468,37 @@ function nextGameListener(){
     playCells.forEach(div => {
         div.querySelector("img").src = "";
     });
+    popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
+    currentPlayer.value = "X";
+    toggleTurnIndicator("X");
+}
 
+function updateScoreBoard_CPU(winner){
+    let CPU_scores_display = gameBoard.querySelector("#scores-portion");
+    if(vs_cpu){
+        if(winner==="X"){
+            console.log("here");
+            vsCPU_scores[0]+=1;
+            CPU_scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
+        }else if(winner==="O"){
+            vsCPU_scores[2]+=1;
+            CPU_scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
+        }else if (winner==="T"){
+            vsCPU_scores[1]+=1;
+            CPU_scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
+        }
+    }else{
+        if(winner==="X"){
+            console.log("here");
+            vsCPU_scores[0]+=1;
+            CPU_scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
+        }else if(winner==="O"){
+            vsCPU_scores[2]+=1;
+            CPU_scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
+        }else if (winner==="T"){
+            vsCPU_scores[1]+=1;
+            CPU_scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
+        }
+    }
 
 }
