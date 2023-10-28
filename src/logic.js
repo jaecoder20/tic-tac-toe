@@ -24,6 +24,7 @@ const greyShadow = getComputedStyle(document.documentElement).getPropertyValue('
 
 let gameState;
 let playCells;
+let playCellss;
 let winner;
 let currentPlayer;
 let playArea;
@@ -31,11 +32,15 @@ let vs_cpu;
 let gameEnded;
 let vsCPU_scores;
 let PVP_scores;
+let gameMode;
+let available;
+let cpu_turn;
 
 
 let player_1,player_2,player_cpu;
 window.addEventListener('DOMContentLoaded', () => {
     playArea = gameBoard.querySelector("#grid-portion");
+    playCellss = playArea.getElementsByTagName('div');
     playCells = Array.from(playArea.getElementsByTagName('div'));
     currentPlayer = { value : "X"};
     player_1 = 'X';
@@ -53,9 +58,9 @@ window.addEventListener('DOMContentLoaded', () => {
         "8": [], //diagonal 2
         "isFull": 0,
     };
-
-    vsCPU_scores = [0,0,0]
-    PVP_scores = [0,0,0]
+    available = [1,2,3,4,5,6,7,8,9];
+    vsCPU_scores = [0,0,0];
+    PVP_scores = [0,0,0];
 
     // hideGameBoard();
     // hidePopUpScreen();
@@ -64,6 +69,7 @@ window.addEventListener('DOMContentLoaded', () => {
     showNewGameScreen();
     // showGameBoard();
     newRound();
+    cellsHover();
     
 
 });
@@ -75,11 +81,11 @@ function showNewGameScreen(){
     switchFirstPlayerEvent();
     newGame_CPU();
     newGame_PVP();
+    gameDifficulty();
 }
 function showGameBoard(){
     gameBoard.style.display = 'block';
     gameBoard.style.zIndex = "0";
-    allowPlaying();
 }
 function showPopUpScreen(winner){
     showGameBoard();
@@ -177,14 +183,17 @@ function switchFirstPlayerEvent(){
     })
 }
 
+
+
 function newGame_CPU(){
     let button1 = newGameScreen.querySelector(".button-1");
     button1.addEventListener('click', function(){
         hideNewGameScreen();
-        showGameBoard();
+        // showGameBoard();
+        allowPlaying();
+        showDifficultyScreen();
         modifyScoreBoard_CPU();
-        
-    vs_cpu = true;
+        vs_cpu = true;
     });
 }
 function newGame_PVP(){
@@ -193,6 +202,7 @@ function newGame_PVP(){
         hideNewGameScreen();
         showGameBoard();
         modifyScoreBoard_PVP();
+        allowPlaying();
         vs_cpu = false;
         // console.log(player_1)
     });
@@ -326,7 +336,9 @@ function toggleTurnIndicator(P){
 let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     let clickedCell = event.target;
     let index = clickedCell.id; 
-    let clickedCellImg = clickedCell.querySelector("img");;
+    let clickedCellImg = clickedCell.querySelector("img");
+    console.log("click")
+    console.log(gameState)
 
     if (clickedCell.classList.contains("non-played")) {
         clickedCell.classList.remove("non-played")
@@ -334,10 +346,14 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
         let imgSrc = (currentPlayer.value === 'X') ? "assets/icon-x.svg" : "assets/icon-o.svg";
         clickedCellImg.src = imgSrc; // Update the src attribute of the img element
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
-        // console.log(clickedCell.classList);
-        (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
-        
+        console.log(currentPlayer.value)
+        let endOfGame = checkOutcome(gameState,playCells);
+        toggleTurnIndicator(currentPlayer.value);
+
+        (!endOfGame && vs_cpu)? playingCPU():"";
+        toggleTurnIndicator(currentPlayer.value);
     }
+    
 }
 let updateaGameState = function(index,currentPlayer){
     if (index==1){
@@ -439,12 +455,6 @@ function gameReset(){
 
 function nextGameListener(){
     nextButton = document.getElementById("next-button");
-    //reset gameState
-    // add non-played classes back to divs who lost the class
-    // hide pop screen
-    // bring gameboard back to z-index 0
-    //set game ended back to false
-    // set all cell src to ""
     gameState = {
         //Couting from top for rows and from left for columns
         "1": [], //row 1 
@@ -471,6 +481,7 @@ function nextGameListener(){
     popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
     currentPlayer.value = "X";
     toggleTurnIndicator("X");
+    (vs_cpu)? playingCPU(): "";
 }
 
 function updateScoreBoard_CPU(winner){
@@ -502,3 +513,83 @@ function updateScoreBoard_CPU(winner){
     }
 
 }
+
+//Difficulty Button Listeners 
+
+function gameDifficulty(){
+    let easy = document.querySelector("#easy-button");
+    let medium = document.querySelector("#medium-button");
+    let impossible = document.querySelector("#impossible-button");
+
+    easy.addEventListener('click', function(){
+        showGameBoard();
+        hideDifficultyScreen();
+        gameMode = 'E';
+        playingCPU();
+    })
+    medium.addEventListener('click', function(){
+        gameMode = 'M';
+        showGameBoard();
+        hideDifficultyScreen();
+    })
+    impossible.addEventListener('click', function(){
+        gameMode = 'I';
+        showGameBoard();
+        hideDifficultyScreen();
+    })
+    
+}
+
+
+function playingCPU(){
+    cpu_turn = (currentPlayer.value===player_cpu)? true: false;
+    if (cpu_turn){//create variable
+        let index = cpuPlay();//create function
+        cpu_turn = false;
+        updateaGameState(index,currentPlayer.value);
+        currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
+        checkOutcome(gameState,playCells);
+        
+    }
+}
+
+function cpuPlay(){
+    while (true){
+        let randomDecimal = Math.random()*9;
+        let randomIntegerBetween1And9 = Math.floor(randomDecimal)+1;
+        console.log(randomIntegerBetween1And9);
+        if (document.getElementById(randomIntegerBetween1And9).classList.contains("non-played")){
+            console.log("here");
+            cpuMakesMoves(randomIntegerBetween1And9);
+            (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
+            return randomIntegerBetween1And9;
+        }
+    }
+}
+
+function cpuMakesMoves(num){
+    let I = currentPlayer.value;
+    document.getElementById(num).querySelector("img").src = `assets/icon-${I}.svg`;
+    document.getElementById(num).classList.remove("non-played");
+
+}
+
+// function cellsHover(){
+//     playCells.forEach(cell => {
+//         cell.addEventListener('mouseenter', function() {
+//             if(cell.classList.contains("non-played")){
+//                 cell.querySelector("img").src = `assets/icon-${currentPlayer.value}-outline.svg`;
+//             }
+//         });
+//       });
+//     playCells.forEach(cell => {
+//         cell.addEventListener('mouseleave', function() {
+//             if(cell.classList.contains("non-played")){
+//                 cell.querySelector("img").src = "";
+//             }
+//         });
+//       });
+// }
+
+//approach from the angle of the CPU reacting to players moves, unless cpu goes first
+//

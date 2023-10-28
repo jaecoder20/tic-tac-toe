@@ -307,6 +307,9 @@ body{
 #reset-container img{
     filter: brightness(0) saturate(100%) invert(13%) sepia(7%) saturate(2745%) hue-rotate(159deg) brightness(100%) contrast(94%);
 }
+#reset-container:hover{
+    cursor: pointer;
+}
 
 
 #pop-screen{
