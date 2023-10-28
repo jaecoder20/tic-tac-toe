@@ -330,6 +330,7 @@ function hitBoxHandler(event){
 }
 
 function toggleTurnIndicator(P){
+    P = (P==="X") ? "x": "o";
     gameBoard.querySelector("#turn-indicator").querySelector("#turn-svg").src = `assets/icon-${P}-silver.svg`;
 }
 
@@ -568,7 +569,7 @@ function cpuPlay(){
 }
 
 function cpuMakesMoves(num){
-    let I = currentPlayer.value;
+    let I = (currentPlayer.value==="X")? "x": "o";
     document.getElementById(num).querySelector("img").src = `assets/icon-${I}.svg`;
     document.getElementById(num).classList.remove("non-played");
 
