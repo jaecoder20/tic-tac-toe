@@ -1,3 +1,4 @@
+//DOM ELEMENTS
 let newGameScreen = document.getElementById("new-game-container");
 let gameBoard = document.getElementById("game-board");
 let popUpScreen = document.getElementById("pop-screen")
@@ -5,7 +6,8 @@ let difficultyScreen = document.getElementById("difficulty-screen");
 let popUpScreenRestart = document.getElementById("pop-screen-r");
 let playerSelector_X = document.getElementById("x-selector")
 let playerSelector_O = document.getElementById("o-selector")
-// COLORS
+
+// Imported CSS COLORS
 const semi_dark_navy = getComputedStyle(document.documentElement).getPropertyValue('--semi-dark-navy');
 const lightYellow = getComputedStyle(document.documentElement).getPropertyValue('--light-yellow');
 const lightYellowHover = getComputedStyle(document.documentElement).getPropertyValue('--light-yellow-hover');
@@ -21,7 +23,7 @@ const playerSelector = getComputedStyle(document.documentElement).getPropertyVal
 const playboxShadow = getComputedStyle(document.documentElement).getPropertyValue('--playbox-shadow');
 const greyShadow = getComputedStyle(document.documentElement).getPropertyValue('--grey-shadow');
 
-
+//GLOBAL VARIABLES
 let gameState;
 let playCells;
 let playCellss;
@@ -35,17 +37,65 @@ let PVP_scores;
 let gameMode;
 let available;
 let cpu_turn;
-
-
 let player_1,player_2,player_cpu;
-window.addEventListener('DOMContentLoaded', () => {
-    playArea = gameBoard.querySelector("#grid-portion");
-    playCellss = playArea.getElementsByTagName('div');
-    playCells = Array.from(playArea.getElementsByTagName('div'));
-    currentPlayer = { value : "X"};
-    player_1 = 'X';
-    player_2 = 'O';
-    player_cpu = 'O';
+
+//EVENT LISTENERS
+function startGame(){
+    window.addEventListener('DOMContentLoaded', () => {
+        playArea = gameBoard.querySelector("#grid-portion");
+        playCellss = playArea.getElementsByTagName('div');
+        playCells = Array.from(playArea.getElementsByTagName('div'));
+        currentPlayer = { value : "X"};
+        player_1 = 'X';
+        player_2 = 'O';
+        player_cpu = 'O';
+        gameState = {
+            //Couting from top for rows and from left for columns
+            "1": [], //row 1 
+            "2": [], //row 2
+            "3": [], //row 3
+            "4": [], //column 1
+            "5": [], //column 2 
+            "6": [],  //column 3
+            "7": [], //diagonal 1
+            "8": [], //diagonal 2
+            "isFull": 0,
+        };
+        vsCPU_scores = [0,0,0];
+        PVP_scores = [0,0,0];
+        hideAllScreens();
+        showNewGameScreen();
+        newRound();
+        gameReset();
+    });
+}
+
+function gameDifficulty(){
+    let easy = document.querySelector("#easy-button");
+    let medium = document.querySelector("#medium-button");
+    let impossible = document.querySelector("#impossible-button");
+
+    easy.addEventListener('click', function(){
+
+        showGameBoard();
+        hideDifficultyScreen();
+        gameMode = "E";
+        playingCPU(gameMode);
+    })
+    medium.addEventListener('click', function(){
+        gameMode = 'M';
+        showGameBoard();
+        hideDifficultyScreen();
+        playingCPU(gameMode);
+    })
+    impossible.addEventListener('click', function(){
+        gameMode = 'I';
+        showGameBoard();
+        hideDifficultyScreen();
+    })
+    
+}
+function nextGameListener(){
     gameState = {
         //Couting from top for rows and from left for columns
         "1": [], //row 1 
@@ -58,69 +108,22 @@ window.addEventListener('DOMContentLoaded', () => {
         "8": [], //diagonal 2
         "isFull": 0,
     };
-    available = [1,2,3,4,5,6,7,8,9];
-    vsCPU_scores = [0,0,0];
-    PVP_scores = [0,0,0];
-
-    // hideGameBoard();
-    // hidePopUpScreen();
-    // hideDifficultyScreen();
-    // hidePopUpScreenRestart();
-    showNewGameScreen();
-    // showGameBoard();
-    newRound();
-    cellsHover();
-    
-
-});
-
-//SHOW DIFFERENT SCREENS
-function showNewGameScreen(){
-    newGameScreen.style.display = 'flex';
-    hoverPlayerEvent();
-    switchFirstPlayerEvent();
-    newGame_CPU();
-    newGame_PVP();
-    gameDifficulty();
-}
-function showGameBoard(){
-    gameBoard.style.display = 'block';
-    gameBoard.style.zIndex = "0";
-}
-function showPopUpScreen(winner){
+    playCells.forEach(div => {
+        if(!div.classList.contains("non-played")){
+            div.classList.add("non-played");
+        }
+    });
+    hidePopUpScreen();
     showGameBoard();
-    modifyPopScreen(winner);
-    gameBoard.style.zIndex = "-1";
-    popUpScreen.style.display = 'flex';
+    gameEnded = false;
+    playCells.forEach(div => {
+        div.querySelector("img").src = "";
+    });
+    popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
+    currentPlayer.value = "X";
+    toggleTurnIndicator("X");
+    (vs_cpu)? playingCPU(): "";
 }
-function showDifficultyScreen(){
-    difficultyScreen.style.display = 'flex';
-}
-function showPopUpScreenRestart(){
-    popUpScreenRestart.style.display = 'flex';
-}
-
-// HIDE DIFFERENT SCREENS
-function hideNewGameScreen(){
-    newGameScreen.style.display = 'none';
-}
-function hideGameBoard(){
-    gameBoard.style.display = 'none';
-}
-function hidePopUpScreen(){
-    popUpScreen.style.display = 'none';
-    // hideGameBoard();
-}
-function hideDifficultyScreen(){
-    difficultyScreen.style.display = 'none';
-}
-function hidePopUpScreenRestart(){
-    popUpScreenRestart.style.display = 'none';
-}
-
-
-// New Game Screen Event Listener Functions 
-
 function hoverPlayerEvent(){
     playerSelector_O.addEventListener("mouseenter",function(){
         if (player_1 === "X"){
@@ -155,14 +158,7 @@ function switchFirstPlayerEvent(){
         playerSelector_X.style.backgroundColor = darkNavy;
         let svgs = document.querySelectorAll(".svg-selectors");
         svgs[0].src = "assets/icon-x-silver.svg";
-        svgs[1].src = "assets/icon-o-dark.svg";
-
-        console.log(currentPlayer)
-        console.log(player_1)
-        console.log(player_2)
-        console.log(player_cpu)
-
-        
+        svgs[1].src = "assets/icon-o-dark.svg";    
     })
     playerSelector_X.addEventListener('click', function(){
         player_1 = 'X';
@@ -173,13 +169,6 @@ function switchFirstPlayerEvent(){
         let svgs = document.querySelectorAll(".svg-selectors");
         svgs[0].src = "assets/icon-x-dark.svg";
         svgs[1].src = "assets/icon-o-silver.svg";
-
-        console.log(currentPlayer)
-        console.log(player_1)
-        console.log(player_2)
-        console.log(player_cpu)
-
-        
     })
 }
 
@@ -194,6 +183,7 @@ function newGame_CPU(){
         showDifficultyScreen();
         modifyScoreBoard_CPU();
         vs_cpu = true;
+        changeScores();
     });
 }
 function newGame_PVP(){
@@ -204,10 +194,95 @@ function newGame_PVP(){
         modifyScoreBoard_PVP();
         allowPlaying();
         vs_cpu = false;
-        // console.log(player_1)
+        changeScores();
     });
 }
+function newRound(){
+    let nextButton = document.getElementById("next-button");
+    let quitButton = document.getElementById("quit-button");
+    nextButton.addEventListener('click', function(){
+        nextGameListener();
+    })    
+    quitButton.addEventListener('click', function(){
+        hideAllScreens();
+        nextGameListener();
+        hideGameBoard();
+        showNewGameScreen();
+    })    
+}
 
+function gameReset(){
+    let reset = document.getElementById("reset-container");
+    reset.addEventListener('click', function(){
+        showPopUpScreenRestart();
+        restartorCancelBtnListener();
+    })    
+}
+
+function restartorCancelBtnListener(){
+    let restartBtn = document.getElementById("restart-button");
+    restartBtn.addEventListener('click', function(){
+        nextGameListener();
+        hidePopUpScreenRestart();
+    })  
+    let cancelBtn = document.getElementById("cancel-button");
+    cancelBtn.addEventListener('click', function(){
+        hidePopUpScreenRestart();
+        showGameBoard();
+    })  
+}
+
+//SHOW SCREEN FUNCTIONS
+function showNewGameScreen(){
+    newGameScreen.style.display = 'flex';
+    hoverPlayerEvent();
+    switchFirstPlayerEvent();
+    newGame_CPU();
+    newGame_PVP();
+    gameDifficulty();
+}
+function showGameBoard(){
+    gameBoard.style.display = 'block';
+    gameBoard.style.zIndex = "0";
+}
+function showPopUpScreen(winner){
+    showGameBoard();
+    modifyPopScreen(winner);
+    gameBoard.style.zIndex = "-1";
+    popUpScreen.style.display = 'flex';
+}
+function showDifficultyScreen(){
+    difficultyScreen.style.display = 'flex';
+}
+function showPopUpScreenRestart(){
+    gameBoard.style.zIndex = "-1";
+    popUpScreenRestart.style.display = 'flex';
+}
+
+// HIDE SCREEN FUNCTIONS
+function hideNewGameScreen(){
+    newGameScreen.style.display = 'none';
+}
+function hideGameBoard(){
+    gameBoard.style.display = 'none';
+}
+function hidePopUpScreen(){
+    popUpScreen.style.display = 'none';
+}
+function hideDifficultyScreen(){
+    difficultyScreen.style.display = 'none';
+}
+function hidePopUpScreenRestart(){
+    popUpScreenRestart.style.display = 'none';
+}
+
+function hideAllScreens(){
+    hideNewGameScreen();
+    hideGameBoard();
+    hidePopUpScreen();
+    hideDifficultyScreen();
+    hidePopUpScreenRestart();
+}
 
 function modifyScoreBoard_CPU(){
     let board = gameBoard;
@@ -237,7 +312,6 @@ function modifyScoreBoard_PVP(){
 }
 
 function modifyPopScreen(winner){
-    // console.log(vs_cpu)
     if(vs_cpu){
         if (winner === player_1){
             if(player_1==='O'){
@@ -261,7 +335,7 @@ function modifyPopScreen(winner){
                 popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
-                console.log(winner)
+                // console.log(winner)
             }else{
                 popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
@@ -317,13 +391,10 @@ function modifyPopScreen(winner){
 
 // FUNCTIONS FOR GRID AND PLAYING
 function allowPlaying(){
-    // console.log(playCells)
     playCells.forEach(div => {
         div.addEventListener('click', hitBoxHandler);
     });
 }
-
-
 
 function hitBoxHandler(event){
     place_X_or_O(event, playCells, currentPlayer, gameState); 
@@ -338,19 +409,15 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     let clickedCell = event.target;
     let index = clickedCell.id; 
     let clickedCellImg = clickedCell.querySelector("img");
-    console.log("click")
-    console.log(gameState)
 
     if (clickedCell.classList.contains("non-played")) {
         clickedCell.classList.remove("non-played")
         updateaGameState(index,currentPlayer.value); 
         let imgSrc = (currentPlayer.value === 'X') ? "assets/icon-x.svg" : "assets/icon-o.svg";
-        clickedCellImg.src = imgSrc; // Update the src attribute of the img element
+        clickedCellImg.src = imgSrc; 
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
-        console.log(currentPlayer.value)
         let endOfGame = checkOutcome(gameState,playCells);
         toggleTurnIndicator(currentPlayer.value);
-
         (!endOfGame && vs_cpu)? playingCPU():"";
         toggleTurnIndicator(currentPlayer.value);
     }
@@ -409,144 +476,89 @@ let updateaGameState = function(index,currentPlayer){
         gameState["7"]+=[currentPlayer];
         gameState.isFull+=1;
     }
-    // console.log(gameState)
-
 }
-
 let checkOutcome = function(gameState,divs){
-    gameEnded = false;
+    console.log(gameState);
     // console.log(gameState[1]);
     for (let key in gameState) {
         let value = gameState[key]; 
         if (value[0] === "O" && value[1] === "O" && value[2] === "O") {
             // console.log("here")
             showPopUpScreen('O');
-            updateScoreBoard_CPU("O")
-            gameEnded = true;
-            // disablePlaying(divs);
+            updateScoreBoard_CPU("O");
+            return true;
             
         } else if (value[0] === "X" && value[1] === "X" && value[2] === "X") {
             showPopUpScreen('X');
-            updateScoreBoard_CPU("X")
-            gameEnded = true;
+            updateScoreBoard_CPU("X");
+            console.log("here2");
+            return true;
             
         }
-        else if ((gameState.isFull==9)&&(gameEnded==false)){
-            showPopUpScreen('T');
-            updateScoreBoard_CPU("T")
-            gameEnded = true;
-        }
     }
-    return gameEnded;
+    if (gameState.isFull==9){
+        showPopUpScreen('T');
+        updateScoreBoard_CPU("T");
+        console.log("here2");
+        return true;
+    }
+    return false;
 }
-
-function newRound(){
-    nextButton = document.getElementById("next-button");
-    nextButton.addEventListener('click', function(){
-        nextGameListener();
-        console.log(gameEnded,gameState)
-        console.log(gameEnded)
-    })
-    
-}
-
-function gameReset(){
-
-}
-
-function nextGameListener(){
-    nextButton = document.getElementById("next-button");
-    gameState = {
-        //Couting from top for rows and from left for columns
-        "1": [], //row 1 
-        "2": [], //row 2
-        "3": [], //row 3
-        "4": [], //column 1
-        "5": [], //column 2 
-        "6": [],  //column 3
-        "7": [], //diagonal 1
-        "8": [], //diagonal 2
-        "isFull": 0,
-    };
-    playCells.forEach(div => {
-        if(!div.classList.contains("non-played")){
-            div.classList.add("non-played")
-        }
-    });
-    hidePopUpScreen();
-    showGameBoard();
-    gameEnded = false;
-    playCells.forEach(div => {
-        div.querySelector("img").src = "";
-    });
-    popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
-    currentPlayer.value = "X";
-    toggleTurnIndicator("X");
-    (vs_cpu)? playingCPU(): "";
-}
-
 function updateScoreBoard_CPU(winner){
-    let CPU_scores_display = gameBoard.querySelector("#scores-portion");
+    let scores_display = gameBoard.querySelector("#scores-portion");
+    console.log(vs_cpu);
     if(vs_cpu){
         if(winner==="X"){
-            console.log("here");
+            // console.log("here");
             vsCPU_scores[0]+=1;
-            CPU_scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
+            scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
         }else if(winner==="O"){
             vsCPU_scores[2]+=1;
-            CPU_scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
+            scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
         }else if (winner==="T"){
             vsCPU_scores[1]+=1;
-            CPU_scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
+            scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
         }
-    }else{
+    }else if(!vs_cpu){
+        console.log(winner)
         if(winner==="X"){
-            console.log("here");
-            vsCPU_scores[0]+=1;
-            CPU_scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
+            // console.log("here");
+            PVP_scores[0]+=1;
+            scores_display.querySelector("#player-wins").querySelector(".score").textContent = PVP_scores[0]+"";
         }else if(winner==="O"){
-            vsCPU_scores[2]+=1;
-            CPU_scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
+            PVP_scores[2]+=1;
+            scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = PVP_scores[2]+"";
         }else if (winner==="T"){
-            vsCPU_scores[1]+=1;
-            CPU_scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
+            PVP_scores[1]+=1;
+            scores_display.querySelector("#player-ties").querySelector(".score").textContent = PVP_scores[1]+"";
         }
     }
 
 }
-
-//Difficulty Button Listeners 
-
-function gameDifficulty(){
-    let easy = document.querySelector("#easy-button");
-    let medium = document.querySelector("#medium-button");
-    let impossible = document.querySelector("#impossible-button");
-
-    easy.addEventListener('click', function(){
-        showGameBoard();
-        hideDifficultyScreen();
-        gameMode = 'E';
-        playingCPU();
-    })
-    medium.addEventListener('click', function(){
-        gameMode = 'M';
-        showGameBoard();
-        hideDifficultyScreen();
-    })
-    impossible.addEventListener('click', function(){
-        gameMode = 'I';
-        showGameBoard();
-        hideDifficultyScreen();
-    })
-    
+function changeScores(){
+    let scores_display = gameBoard.querySelector("#scores-portion");
+    if (vs_cpu){
+        scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
+        scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = vsCPU_scores[2]+"";
+        scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
+    }else{
+        scores_display.querySelector("#player-wins").querySelector(".score").textContent = PVP_scores[0]+"";
+        scores_display.querySelector("#cpu-wins").querySelector(".score").textContent = PVP_scores[2]+"";
+        scores_display.querySelector("#player-ties").querySelector(".score").textContent = PVP_scores[1]+"";
+    }
 }
 
 
+
+
+//FUNCTIONS FOR CPU PLAYING
 function playingCPU(){
+    // console.log(gameMode)
     cpu_turn = (currentPlayer.value===player_cpu)? true: false;
     if (cpu_turn){//create variable
         let index = cpuPlay();//create function
         cpu_turn = false;
+        cpuMakesMoves(index);
         updateaGameState(index,currentPlayer.value);
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
         checkOutcome(gameState,playCells);
@@ -555,16 +567,10 @@ function playingCPU(){
 }
 
 function cpuPlay(){
-    while (true){
-        let randomDecimal = Math.random()*9;
-        let randomIntegerBetween1And9 = Math.floor(randomDecimal)+1;
-        console.log(randomIntegerBetween1And9);
-        if (document.getElementById(randomIntegerBetween1And9).classList.contains("non-played")){
-            console.log("here");
-            cpuMakesMoves(randomIntegerBetween1And9);
-            (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
-            return randomIntegerBetween1And9;
-        }
+    if (gameMode==="E"){
+        return easyAlgorithm();
+    }else if (gameMode==="M"){
+        return mediumAlgorithm();
     }
 }
 
@@ -575,22 +581,83 @@ function cpuMakesMoves(num){
 
 }
 
-// function cellsHover(){
-//     playCells.forEach(cell => {
-//         cell.addEventListener('mouseenter', function() {
-//             if(cell.classList.contains("non-played")){
-//                 cell.querySelector("img").src = `assets/icon-${currentPlayer.value}-outline.svg`;
-//             }
-//         });
-//       });
-//     playCells.forEach(cell => {
-//         cell.addEventListener('mouseleave', function() {
-//             if(cell.classList.contains("non-played")){
-//                 cell.querySelector("img").src = "";
-//             }
-//         });
-//       });
-// }
+function easyAlgorithm(){
+    return randomMove();
+}
+function randomMove(){
+    while (true){
+        let randomDecimal = Math.random()*9;
+        let randomIntegerBetween1And9 = Math.floor(randomDecimal)+1;
+        if (document.getElementById(randomIntegerBetween1And9).classList.contains("non-played")){
+            (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
+            return randomIntegerBetween1And9;
+        }
+    }
+}
 
-//approach from the angle of the CPU reacting to players moves, unless cpu goes first
-//
+function mediumAlgorithm(){
+    // Immediate winning move
+    for (let i=1;i<8;i++){
+        if(gameState[i].length<3){
+            for (let j=0;j<3;j++){
+                if (gameState[i][j]===undefined){
+                    let gameCopy = gameState[i]+["O"];
+                    let tileNumberW = findMapping(i,j);
+                    if (checkWin(gameCopy,player_cpu) && document.getElementById(tileNumberW).classList.contains("non-played")){
+                        return tileNumberW;
+                }
+                }
+            }
+        }
+    }
+    //Immediate blocking move
+    for (let i=1;i<8;i++){
+        if(gameState[i].length<3){
+            for (let j=0;j<3;j++){
+                if (gameState[i][j]===undefined){
+                    let gameCopy = gameState[i]+["X"];
+                    let tileNumberB = findMapping(i,j);
+                    if (checkWin(gameCopy,player_1) && document.getElementById(tileNumberB).classList.contains("non-played")){
+                        return tileNumberB;
+                }
+                }
+            }
+        }
+    }
+
+    return randomMove();
+}
+
+function findMapping(array, seq) {
+    switch (array) {
+        case 1:
+            return 1 + seq;
+        case 2:
+            return 4 + seq;
+        case 3:
+            return 7 + seq;
+        case 4:
+            return 3 * (seq + 1) - 2;
+        case 5:
+            return 3 * (seq + 1) - 1;
+        case 6:
+            return 3 * (seq + 1);
+        case 7:
+            return 4 * (seq + 1) - 3;
+        case 8:
+            return 2 * (seq + 1) + 1;
+        default:
+            return null; 
+    }
+}
+
+let checkWin = function(gameState,player){
+        let value = gameState; 
+        if (value[0] === player && value[1] === player && value[2] === player) {
+            return true;
+        } 
+    return false;
+
+}
+
+startGame();
