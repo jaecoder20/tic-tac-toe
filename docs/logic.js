@@ -64,6 +64,7 @@ function startGame(){
         showNewGameScreen();
         newRound();
         gameReset();
+        preplayHover();
     });
 }
 
@@ -105,7 +106,9 @@ function nextGameListener(){
         "8": [], //diagonal 2
         "isFull": 0,
     };
+    preplayHover();
     playCells.forEach(div => {
+        div.style.backgroundImage = "url()"
         if(!div.classList.contains("non-played")){
             div.classList.add("non-played");
         }
@@ -413,9 +416,13 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     let clickedCell = event.target;
     let index = clickedCell.id; 
     let clickedCellImg = clickedCell.querySelector("img");
+    
 
     if (clickedCell.classList.contains("non-played")) {
+        console.log("clicked")
         clickedCell.classList.remove("non-played")
+        clickedCell.removeEventListener("mouseleave", hoverOut);
+        clickedCell.removeEventListener("mouseenter", hoverIn);
         updateaGameState(index,currentPlayer.value); 
         let imgSrc = (currentPlayer.value === 'X') ? "assets/icon-x.svg" : "assets/icon-o.svg";
         clickedCellImg.src = imgSrc; 
@@ -570,8 +577,11 @@ function cpuPlay(){
 
 function cpuMakesMoves(num){
     let I = (currentPlayer.value==="X")? "x": "o";
-    document.getElementById(num).querySelector("img").src = `assets/icon-${I}.svg`;
-    document.getElementById(num).classList.remove("non-played");
+    let playedCell = document.getElementById(num);
+    playedCell.querySelector("img").src = `assets/icon-${I}.svg`;
+    playedCell.classList.remove("non-played");
+    playedCell.removeEventListener("mouseleave", hoverOut);
+    playedCell.removeEventListener("mouseenter", hoverIn);
 
 }
 
@@ -654,6 +664,29 @@ let checkWin = function(gameState1,player){
         } 
     return false;
 
+}
+
+function preplayHover(){
+    playCells.forEach(div => {
+        div.addEventListener('mouseenter', hoverIn);
+    });
+    playCells.forEach(div => {
+        div.addEventListener('mouseleave', hoverOut);
+    });
+
+}
+
+function hoverIn(event){
+    let hoverCell = event.target;
+    if (currentPlayer.value==="X"){
+        hoverCell.style.backgroundImage = "url(assets/icon-x-outline.svg)";
+    }else{
+        hoverCell.style.backgroundImage = "url(assets/icon-o-outline.svg)";
+    }
+}
+function hoverOut(event){
+    let hoverCell = event.target;
+    hoverCell.style.backgroundImage = "url()";
 }
 
 startGame();
