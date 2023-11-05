@@ -207,6 +207,9 @@ function newRound(){
         currentPlayer.value = (currentPlayer.value==="O")? "O": "X";
     })    
     quitButton.addEventListener('click', function(){
+        
+        currentPlayer.value = (currentPlayer.value==="O")? "O": "X";
+        vs_cpu = false;
         resetScores();
         hideAllScreens();
         nextGameListener();
