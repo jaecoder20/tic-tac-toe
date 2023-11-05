@@ -26,7 +26,6 @@ const greyShadow = getComputedStyle(document.documentElement).getPropertyValue('
 //GLOBAL VARIABLES
 let gameState;
 let playCells;
-let playCellss;
 let winner;
 let currentPlayer;
 let playArea;
@@ -35,7 +34,6 @@ let gameEnded;
 let vsCPU_scores;
 let PVP_scores;
 let gameMode;
-let available;
 let cpu_turn;
 let player_1,player_2,player_cpu;
 
@@ -43,7 +41,6 @@ let player_1,player_2,player_cpu;
 function startGame(){
     window.addEventListener('DOMContentLoaded', () => {
         playArea = gameBoard.querySelector("#grid-portion");
-        playCellss = playArea.getElementsByTagName('div');
         playCells = Array.from(playArea.getElementsByTagName('div'));
         currentPlayer = { value : "X"};
         player_1 = 'X';
@@ -204,12 +201,20 @@ function newRound(){
         nextGameListener();
     })    
     quitButton.addEventListener('click', function(){
+        resetScores();
         hideAllScreens();
         nextGameListener();
         hideGameBoard();
         showNewGameScreen();
     })    
 }
+function resetScores(){
+    for(let i=0;i<3;i++){
+        PVP_scores[i] = 0;
+        vsCPU_scores[i] = 0;
+    }
+}
+
 
 function gameReset(){
     let reset = document.getElementById("reset-container");
@@ -335,7 +340,6 @@ function modifyPopScreen(winner){
                 popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#result-msg").style.color = lightYellow;
                 popUpScreen.querySelector("img").src = "assets/icon-o.svg";
-                // console.log(winner)
             }else{
                 popUpScreen.querySelector("img").style.display = "block";
                 popUpScreen.querySelector("#who-won").textContent = "TAKES THE ROUND";
@@ -478,12 +482,9 @@ let updateaGameState = function(index,currentPlayer){
     }
 }
 let checkOutcome = function(gameState,divs){
-    console.log(gameState);
-    // console.log(gameState[1]);
     for (let key in gameState) {
         let value = gameState[key]; 
         if (value[0] === "O" && value[1] === "O" && value[2] === "O") {
-            // console.log("here")
             showPopUpScreen('O');
             updateScoreBoard_CPU("O");
             return true;
@@ -491,7 +492,6 @@ let checkOutcome = function(gameState,divs){
         } else if (value[0] === "X" && value[1] === "X" && value[2] === "X") {
             showPopUpScreen('X');
             updateScoreBoard_CPU("X");
-            console.log("here2");
             return true;
             
         }
@@ -499,17 +499,14 @@ let checkOutcome = function(gameState,divs){
     if (gameState.isFull==9){
         showPopUpScreen('T');
         updateScoreBoard_CPU("T");
-        console.log("here2");
         return true;
     }
     return false;
 }
 function updateScoreBoard_CPU(winner){
     let scores_display = gameBoard.querySelector("#scores-portion");
-    console.log(vs_cpu);
     if(vs_cpu){
         if(winner==="X"){
-            // console.log("here");
             vsCPU_scores[0]+=1;
             scores_display.querySelector("#player-wins").querySelector(".score").textContent = vsCPU_scores[0]+"";
         }else if(winner==="O"){
@@ -520,9 +517,7 @@ function updateScoreBoard_CPU(winner){
             scores_display.querySelector("#player-ties").querySelector(".score").textContent = vsCPU_scores[1]+"";
         }
     }else if(!vs_cpu){
-        console.log(winner)
         if(winner==="X"){
-            // console.log("here");
             PVP_scores[0]+=1;
             scores_display.querySelector("#player-wins").querySelector(".score").textContent = PVP_scores[0]+"";
         }else if(winner==="O"){
@@ -553,7 +548,6 @@ function changeScores(){
 
 //FUNCTIONS FOR CPU PLAYING
 function playingCPU(){
-    // console.log(gameMode)
     cpu_turn = (currentPlayer.value===player_cpu)? true: false;
     if (cpu_turn){//create variable
         let index = cpuPlay();//create function
@@ -585,6 +579,7 @@ function easyAlgorithm(){
     return randomMove();
 }
 function randomMove(){
+    console.log("random")
     while (true){
         let randomDecimal = Math.random()*9;
         let randomIntegerBetween1And9 = Math.floor(randomDecimal)+1;
@@ -601,9 +596,10 @@ function mediumAlgorithm(){
         if(gameState[i].length<3){
             for (let j=0;j<3;j++){
                 if (gameState[i][j]===undefined){
-                    let gameCopy = gameState[i]+["O"];
+                    let gameCopy = gameState[i]+[player_cpu];
                     let tileNumberW = findMapping(i,j);
                     if (checkWin(gameCopy,player_cpu) && document.getElementById(tileNumberW).classList.contains("non-played")){
+                        console.log("true")
                         return tileNumberW;
                 }
                 }
@@ -615,7 +611,7 @@ function mediumAlgorithm(){
         if(gameState[i].length<3){
             for (let j=0;j<3;j++){
                 if (gameState[i][j]===undefined){
-                    let gameCopy = gameState[i]+["X"];
+                    let gameCopy = gameState[i]+[player_1];
                     let tileNumberB = findMapping(i,j);
                     if (checkWin(gameCopy,player_1) && document.getElementById(tileNumberB).classList.contains("non-played")){
                         return tileNumberB;
@@ -651,8 +647,8 @@ function findMapping(array, seq) {
     }
 }
 
-let checkWin = function(gameState,player){
-        let value = gameState; 
+let checkWin = function(gameState1,player){
+        let value = gameState1; 
         if (value[0] === player && value[1] === player && value[2] === player) {
             return true;
         } 
