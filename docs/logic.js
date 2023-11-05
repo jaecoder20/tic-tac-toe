@@ -120,8 +120,9 @@ function nextGameListener(){
         div.querySelector("img").src = "";
     });
     popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
-    currentPlayer.value = "X";
+    // currentPlayer.value = "X";
     toggleTurnIndicator("X");
+
     (vs_cpu)? playingCPU(): "";
 }
 function hoverPlayerEvent(){
@@ -202,6 +203,8 @@ function newRound(){
     let quitButton = document.getElementById("quit-button");
     nextButton.addEventListener('click', function(){
         nextGameListener();
+        console.log(currentPlayer.value)
+        currentPlayer.value = (currentPlayer.value==="O")? "O": "X";
     })    
     quitButton.addEventListener('click', function(){
         resetScores();
