@@ -163,6 +163,11 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url("");
+    background-repeat: no-repeat;
+    background-position: center center;
+    object-fit: cover;
+    overflow: hidden;
     width: 96px;
     height: 96px;
     border-radius: 10px;
