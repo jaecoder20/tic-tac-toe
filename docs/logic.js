@@ -89,9 +89,6 @@ function nextGameListener(){
     hidePopUpScreen();
     showGameBoard();
     gameEnded = false;
-    playCells.forEach(div => {
-        div.querySelector("img").src = "";
-    });
     popUpScreen.querySelector("#win-or-lose-msg").textContent = "OH NO, YOU LOST"
     // currentPlayer.value = "X";
     toggleTurnIndicator("X");
@@ -479,7 +476,9 @@ function playingCPU(){
     cpu_turn = (currentPlayer.value===player_cpu)? true: false;
     if (cpu_turn){//create variable
         let index = cpuPlay();//create function
-        index = index["index"]+1;
+        if(gameMode==="I"){
+            index = index["index"]+1;
+        }
         cpu_turn = false;
         cpuMakesMoves(index);
         updateaGameState(index,currentPlayer.value);
@@ -497,6 +496,7 @@ function cpuPlay(){
     }
 }
 function cpuMakesMoves(num){
+    console.log(num)
     let I = (currentPlayer.value==="X")? "x": "o";
     let playedCell = document.getElementById(num);
     let src =  `assets/icon-${I}.svg`
