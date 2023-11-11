@@ -395,7 +395,7 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
         clickedCell.removeEventListener("mouseenter", hoverIn);
         updateaGameState(index,currentPlayer.value); 
         let imgSrc = (currentPlayer.value === 'X') ? "assets/icon-x.svg" : "assets/icon-o.svg";
-        clickedCellImg.src = imgSrc; 
+        clickedCell.style.backgroundImage = "url("+imgSrc+")";
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
         let endOfGame = checkOutcome(gameState,playCells);
         toggleTurnIndicator(currentPlayer.value);
@@ -499,7 +499,8 @@ function cpuPlay(){
 function cpuMakesMoves(num){
     let I = (currentPlayer.value==="X")? "x": "o";
     let playedCell = document.getElementById(num);
-    playedCell.querySelector("img").src = `assets/icon-${I}.svg`;
+    let src =  `assets/icon-${I}.svg`
+    playedCell.style.backgroundImage = "url("+src+")";
     playedCell.classList.remove("non-played");
     playedCell.removeEventListener("mouseleave", hoverOut);
     playedCell.removeEventListener("mouseenter", hoverIn);
