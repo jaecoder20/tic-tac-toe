@@ -8,25 +8,16 @@ let playerSelector_X = document.getElementById("x-selector")
 let playerSelector_O = document.getElementById("o-selector")
 
 // Imported CSS COLORS
-const semi_dark_navy = getComputedStyle(document.documentElement).getPropertyValue('--semi-dark-navy');
 const lightYellow = getComputedStyle(document.documentElement).getPropertyValue('--light-yellow');
-const lightYellowHover = getComputedStyle(document.documentElement).getPropertyValue('--light-yellow-hover');
 const lightBlue = getComputedStyle(document.documentElement).getPropertyValue('--light-blue');
-const lightBlueHover = getComputedStyle(document.documentElement).getPropertyValue('--light-blue-hover');
 const darkNavy = getComputedStyle(document.documentElement).getPropertyValue('--dark-navy');
 const semiDarkNavy = getComputedStyle(document.documentElement).getPropertyValue('--semi-dark-navy');
 const silver = getComputedStyle(document.documentElement).getPropertyValue('--silver');
-const silverHover = getComputedStyle(document.documentElement).getPropertyValue('--silver-hover');
-const button1Shadow = getComputedStyle(document.documentElement).getPropertyValue('--button-1-shadow');
-const button2Shadow = getComputedStyle(document.documentElement).getPropertyValue('--button-2-shadow');
 const playerSelector = getComputedStyle(document.documentElement).getPropertyValue('--player-selector');
-const playboxShadow = getComputedStyle(document.documentElement).getPropertyValue('--playbox-shadow');
-const greyShadow = getComputedStyle(document.documentElement).getPropertyValue('--grey-shadow');
 
 //GLOBAL VARIABLES
 let gameState;
 let playCells;
-let winner;
 let currentPlayer;
 let playArea;
 let vs_cpu;
@@ -36,6 +27,11 @@ let PVP_scores;
 let gameMode;
 let cpu_turn;
 let player_1,player_2,player_cpu;
+const winCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6] // Diagonals
+];
 
 //EVENT LISTENERS
 function startGame(){
@@ -46,18 +42,7 @@ function startGame(){
         player_1 = 'X';
         player_2 = 'O';
         player_cpu = 'O';
-        gameState = {
-            //Couting from top for rows and from left for columns
-            "1": [], //row 1 
-            "2": [], //row 2
-            "3": [], //row 3
-            "4": [], //column 1
-            "5": [], //column 2 
-            "6": [],  //column 3
-            "7": [], //diagonal 1
-            "8": [], //diagonal 2
-            "isFull": 0,
-        };
+        gameState = ['','','','','','','','',''];
         vsCPU_scores = [0,0,0];
         PVP_scores = [0,0,0];
         hideAllScreens();
@@ -72,40 +57,28 @@ function gameDifficulty(){
     let easy = document.querySelector("#easy-button");
     let medium = document.querySelector("#medium-button");
     let impossible = document.querySelector("#impossible-button");
-
     easy.addEventListener('click', function(){
-
         showGameBoard();
         hideDifficultyScreen();
         gameMode = "E";
-        playingCPU(gameMode);
+        playingCPU();
     })
     medium.addEventListener('click', function(){
         gameMode = 'M';
         showGameBoard();
         hideDifficultyScreen();
-        playingCPU(gameMode);
+        playingCPU();
     })
     impossible.addEventListener('click', function(){
         gameMode = 'I';
         showGameBoard();
         hideDifficultyScreen();
+        playingCPU();
     })
     
 }
 function nextGameListener(){
-    gameState = {
-        //Couting from top for rows and from left for columns
-        "1": [], //row 1 
-        "2": [], //row 2
-        "3": [], //row 3
-        "4": [], //column 1
-        "5": [], //column 2 
-        "6": [],  //column 3
-        "7": [], //diagonal 1
-        "8": [], //diagonal 2
-        "isFull": 0,
-    };
+    gameState = ['','','','','','','','','']
     preplayHover();
     playCells.forEach(div => {
         div.style.backgroundImage = "url()"
@@ -203,7 +176,6 @@ function newRound(){
     let quitButton = document.getElementById("quit-button");
     nextButton.addEventListener('click', function(){
         nextGameListener();
-        console.log(currentPlayer.value)
         currentPlayer.value = (currentPlayer.value==="O")? "O": "X";
     })    
     quitButton.addEventListener('click', function(){
@@ -400,32 +372,24 @@ function modifyPopScreen(winner){
 
     }
 }
-
-
 // FUNCTIONS FOR GRID AND PLAYING
 function allowPlaying(){
     playCells.forEach(div => {
         div.addEventListener('click', hitBoxHandler);
     });
 }
-
 function hitBoxHandler(event){
     place_X_or_O(event, playCells, currentPlayer, gameState); 
 }
-
 function toggleTurnIndicator(P){
     P = (P==="X") ? "x": "o";
     gameBoard.querySelector("#turn-indicator").querySelector("#turn-svg").src = `assets/icon-${P}-silver.svg`;
 }
-
 let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     let clickedCell = event.target;
     let index = clickedCell.id; 
     let clickedCellImg = clickedCell.querySelector("img");
-    
-
     if (clickedCell.classList.contains("non-played")) {
-        console.log("clicked")
         clickedCell.classList.remove("non-played")
         clickedCell.removeEventListener("mouseleave", hoverOut);
         clickedCell.removeEventListener("mouseenter", hoverIn);
@@ -441,80 +405,35 @@ let place_X_or_O = function(event, playCells, currentPlayer, gameState){
     
 }
 let updateaGameState = function(index,currentPlayer){
-    if (index==1){
-        gameState["1"]+=[currentPlayer];
-        gameState["4"]+=[currentPlayer];
-        gameState["7"]+=[currentPlayer];
-        gameState.isFull+=1;
-        
-    }
-    else if(index==2){
-        gameState["1"]+=[currentPlayer];
-        gameState["5"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==3){
-        gameState["1"]+=[currentPlayer];
-        gameState["6"]+=[currentPlayer];
-        gameState["8"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==4){
-        gameState["2"]+=[currentPlayer];
-        gameState["4"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==5){
-        gameState["2"]+=[currentPlayer];
-        gameState["5"]+=[currentPlayer];
-        gameState["7"]+=[currentPlayer];
-        gameState["8"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==6){
-        gameState["2"]+=[currentPlayer];
-        gameState["6"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==7){
-        gameState["3"]+=[currentPlayer];
-        gameState["4"]+=[currentPlayer];
-        gameState["8"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==8){
-        gameState["3"]+=[currentPlayer];
-        gameState["5"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
-    else if(index==9){
-        gameState["3"]+=[currentPlayer];
-        gameState["6"]+=[currentPlayer];
-        gameState["7"]+=[currentPlayer];
-        gameState.isFull+=1;
-    }
+    gameState[index-1] = currentPlayer;
 }
 let checkOutcome = function(gameState,divs){
-    for (let key in gameState) {
-        let value = gameState[key]; 
-        if (value[0] === "O" && value[1] === "O" && value[2] === "O") {
-            showPopUpScreen('O');
-            updateScoreBoard_CPU("O");
-            return true;
-            
-        } else if (value[0] === "X" && value[1] === "X" && value[2] === "X") {
-            showPopUpScreen('X');
-            updateScoreBoard_CPU("X");
-            return true;
-            
+    let winner;
+    for (const combination of winCombinations) {
+        const [a, b, c] = combination;
+        if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+            winner = gameState[a]; // Return the winning player ('X' or 'O')
         }
     }
-    if (gameState.isFull==9){
+    if (winner === "O") {
+        showPopUpScreen('O');
+        updateScoreBoard_CPU("O");
+        return true;
+        
+    } else if (winner === "X") {
+        showPopUpScreen('X');
+        updateScoreBoard_CPU("X");
+        return true;
+        
+    }
+    if (gameState.includes('')) {
+        return false; // Game is still in progress
+    } else {
         showPopUpScreen('T');
         updateScoreBoard_CPU("T");
         return true;
     }
-    return false;
+    
 }
 function updateScoreBoard_CPU(winner){
     let scores_display = gameBoard.querySelector("#scores-portion");
@@ -555,32 +474,28 @@ function changeScores(){
         scores_display.querySelector("#player-ties").querySelector(".score").textContent = PVP_scores[1]+"";
     }
 }
-
-
-
-
 //FUNCTIONS FOR CPU PLAYING
 function playingCPU(){
     cpu_turn = (currentPlayer.value===player_cpu)? true: false;
     if (cpu_turn){//create variable
         let index = cpuPlay();//create function
+        index = index["index"]+1;
         cpu_turn = false;
         cpuMakesMoves(index);
         updateaGameState(index,currentPlayer.value);
         currentPlayer.value = (currentPlayer.value === 'X') ? 'O' : 'X';
-        checkOutcome(gameState,playCells);
-        
+        checkOutcome(gameState,playCells);       
     }
 }
-
 function cpuPlay(){
     if (gameMode==="E"){
-        return easyAlgorithm();
+        return randomMove();
     }else if (gameMode==="M"){
         return mediumAlgorithm();
+    }else if (gameMode==="I"){
+        return minimax(gameState,player_cpu);
     }
 }
-
 function cpuMakesMoves(num){
     let I = (currentPlayer.value==="X")? "x": "o";
     let playedCell = document.getElementById(num);
@@ -588,19 +503,13 @@ function cpuMakesMoves(num){
     playedCell.classList.remove("non-played");
     playedCell.removeEventListener("mouseleave", hoverOut);
     playedCell.removeEventListener("mouseenter", hoverIn);
-
-}
-
-function easyAlgorithm(){
-    return randomMove();
 }
 function randomMove(){
-    console.log("random")
     while (true){
         let randomDecimal = Math.random()*9;
         let randomIntegerBetween1And9 = Math.floor(randomDecimal)+1;
         if (document.getElementById(randomIntegerBetween1And9).classList.contains("non-played")){
-            (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):console.log();
+            (checkOutcome(gameState, playCells)==false) ? toggleTurnIndicator(currentPlayer.value):"";
             return randomIntegerBetween1And9;
         }
     }
@@ -608,68 +517,38 @@ function randomMove(){
 
 function mediumAlgorithm(){
     // Immediate winning move
-    for (let i=1;i<8;i++){
-        if(gameState[i].length<3){
-            for (let j=0;j<3;j++){
-                if (gameState[i][j]===undefined){
-                    let gameCopy = gameState[i]+[player_cpu];
-                    let tileNumberW = findMapping(i,j);
-                    if (checkWin(gameCopy,player_cpu) && document.getElementById(tileNumberW).classList.contains("non-played")){
-                        console.log("true")
-                        return tileNumberW;
+    for (let i=0;i<9;i++){
+        if (gameState[i]===""){
+            gameState[i] = player_cpu;
+            if (checkWin(gameState,player_cpu) && document.getElementById(i+1).classList.contains("non-played")){
+                    return i+1;
                 }
-                }
-            }
+            gameState[i] = ""; 
+            }   
         }
-    }
     //Immediate blocking move
-    for (let i=1;i<8;i++){
-        if(gameState[i].length<3){
-            for (let j=0;j<3;j++){
-                if (gameState[i][j]===undefined){
-                    let gameCopy = gameState[i]+[player_1];
-                    let tileNumberB = findMapping(i,j);
-                    if (checkWin(gameCopy,player_1) && document.getElementById(tileNumberB).classList.contains("non-played")){
-                        return tileNumberB;
-                }
-                }
+    for (let i=0;i<9;i++){
+        if (gameState[i]===""){
+            gameState[i] = player_1;
+            if (checkWin(gameState,player_1) && document.getElementById(i+1).classList.contains("non-played")){
+                return i+1;
             }
+            gameState[i] = ""; 
         }
     }
-
     return randomMove();
 }
 
-function findMapping(array, seq) {
-    switch (array) {
-        case 1:
-            return 1 + seq;
-        case 2:
-            return 4 + seq;
-        case 3:
-            return 7 + seq;
-        case 4:
-            return 3 * (seq + 1) - 2;
-        case 5:
-            return 3 * (seq + 1) - 1;
-        case 6:
-            return 3 * (seq + 1);
-        case 7:
-            return 4 * (seq + 1) - 3;
-        case 8:
-            return 2 * (seq + 1) + 1;
-        default:
-            return null; 
-    }
-}
 
 let checkWin = function(gameState1,player){
-        let value = gameState1; 
-        if (value[0] === player && value[1] === player && value[2] === player) {
-            return true;
-        } 
-    return false;
-
+    let winner1;
+    for (const combination of winCombinations) {
+        const [a, b, c] = combination;
+        if (gameState1[a] && gameState1[a] === gameState1[b] && gameState1[a] === gameState1[c]) {
+            winner1 = gameState1[a]; // Return the winning player ('X' or 'O')
+        }
+    }
+    return winner1 === player;
 }
 
 function preplayHover(){
@@ -695,4 +574,63 @@ function hoverOut(event){
     hoverCell.style.backgroundImage = "url()";
 }
 
+
+function avail(){
+    let spots = []
+    for (let i = 0; i < gameState.length; i++) {
+        if (gameState[i] === "") {
+            spots.push(i);
+        }
+    }
+    return spots
+}
+function minimax(newBoard, player) {
+    var availSpots = avail();
+    if (checkWin(newBoard, player_1)) {
+        return { score: -10 };
+    } else if (checkWin(newBoard, player_cpu)) {
+        return { score: 10 };
+    } else if (availSpots.length === 0) {
+        return { score: 0 };
+    }
+
+    var moves = [];
+
+    for (var i = 0; i < availSpots.length; i++) {
+        var move = {};
+        move.index = availSpots[i];
+        newBoard[availSpots[i]] = player;
+
+        if (player == player_cpu) {
+            var result = minimax(newBoard, player_1);
+            move.score = result.score;
+        } else {
+            var result = minimax(newBoard, player_cpu);
+            move.score = result.score;
+        }
+        newBoard[availSpots[i]] = ""; // Revert the move
+
+        moves.push(move);
+    }
+
+    var bestMove;
+    if (player === player_cpu) {
+        var bestScore = -Infinity;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    } else {
+        var bestScore = Infinity;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+    return moves[bestMove];
+}
 startGame();
